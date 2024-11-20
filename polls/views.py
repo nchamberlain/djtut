@@ -1,28 +1,29 @@
+from typing import Any
 from django.db.models import F
+from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.views import generic
+from django.views.generic import TemplateView
 from .models import Question, Choice
 
 # Create your views here.
-def index(request):
-    #modified so it also works for localhost:8000/ (the root so it doesn't blow up)
-    if request.path == "/":
-        return HttpResponse("Hello WORLD. You're at the index for " + request.path)
-    else:
-       #-pub_date means descending order or the NEWEST questions
-       latest_question_list = Question.objects.order_by("-pub_date")[:10] 
-       #this displays them on a single line separated by commas
-       context = {"latest_question_list": latest_question_list}
-       return render(request, "polls/index.html", context)
-    
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question":question})
+class IndexView(generic.ListView):
+    template_name = "polls/index.html"
+    context_object_name = "latest_question_list"
 
-def results(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/results.html", {'question':question})
+    def get_queryset(self):
+        #Return the last 5 published qu4estion
+        return Question.objects.order_by("-pub_date")[:5]
+    
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = "polls/detail.html"
+
+class ResultsView(generic.DetailView):
+    model= Question
+    template_name = "polls/results.html"
 
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
@@ -41,3 +42,8 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a 
         # user hits the Back button.
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+
+class AboutView(TemplateView):
+    template_name = "polls/about.html"
+    # Since the view is defined in polls/views.py the about should be in polls as well
+    

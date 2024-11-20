@@ -5,5 +5,10 @@
     <l1>{{ choice.choice_text }} -- {{ choice.votes }} vote{{choice.votes|pluralize }}</l1><br>
 {% endfor %}
 </ul>
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a><br>
-<!-- I can't get this to work <a href="localhost:8000/polls/index.html">Vote on a new question</a> -->
+<a href="{% url 'polls:detail' question.id %}">Vote on this question again?</a><br>
+<a href="{% url 'polls:index' %}">Vote on a new question</a>
+<!-- These hrefs point to the urls.py values of name=detail or name=index
+ I also noticed that when someone votes, it is a POST and when
+ the vote has been counted, it HttpResponseRedirects back to the
+ results page which causes the server to return a 302 to indicate
+ url redirection! -->
