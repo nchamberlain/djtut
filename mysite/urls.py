@@ -20,4 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path("polls/", include("polls.urls")),
     path('admin/', admin.site.urls),
+    path("", include("polls.urls") )
+    #modified root "" to vector to polls.urls so localhost:8000/ doesn't blowup
 ]
