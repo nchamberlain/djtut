@@ -115,8 +115,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# ON SERVER, should include leading slash, such as '/static/' 
+# django automatically collects the static files for admin site
 STATIC_URL = 'static/'
+
+# this is used by the collectstatic command. Collectstatic is part of the 
+# digitalocean build script so there's no need to run collectstatic when
+# running locally. Also, the below named must exist as a folder on server
+# in the root of the project. The admin static files go here after collectstatic
 STATIC_ROOT = "static_output"
 
 # Default primary key field type
