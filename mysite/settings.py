@@ -139,7 +139,7 @@ STATIC_URL = '/static/'
 # in the root of the project. The static files are copied to this folder after 
 # the server has run collectstatic. If you choose to run colllectstatic locally
 # then git will want to save the repository (170+ files) many of which you will never change.
-STATIC_ROOT = "/static_output"
+STATIC_ROOT = os.path.join(BASE_DIR, "static_output")
 
 # If you want to have extra static files and a directory on your GitHub repo,
 # uncomment the following line. Add the other file location(s) after the last comma
