@@ -1,3 +1,8 @@
+{% extends "polls/base.html" %}
+<title>{% block title %}Question Choices{% endblock %}</title>
+{% block content %}
 <h3>The Polls app was created in the django tutorial</h3>
 <p>This poll app was created from the <a href="https://docs.djangoproject.com/en/5.1/intro/tutorial01/">Django Intro tutorial</a>. The about page was created as a generic view based on the TemplateView.
 </p>
+<p>The formatting was set in the <em>base.css</em> static file that is served by the Digital Ocean static server. Apparently Django doesn't handle static content very well as it only wants to serve dynamic content. The static content can also be pushed to CDN.</p>
+{% endblock %}

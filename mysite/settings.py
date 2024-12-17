@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os, sys
+import dj_database_url
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +23,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#s-%9+(_9nb@3)m!15mnqwuq*@-68+9ja@cwg3oz957p4=91l&'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG")
+#raise Exception("DEBUG = " + str(DEBUG))
+# Determines if local sqlite3 db is used or production db
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+#raise Exception("DEV_MODE = " + str(DEVELOPMENT_MODE))
+if DEVELOPMENT_MODE:
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1, localhost").split(",")
 
 # Application definition
 
@@ -70,17 +79,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
-
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL env variable is not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -119,11 +133,17 @@ USE_TZ = True
 # django automatically collects the static files for admin site
 STATIC_URL = 'static/'
 
-# this is used by the collectstatic command. Collectstatic is part of the 
+# this setting is used by the collectstatic command. Collectstatic is part of the 
 # digitalocean build script so there's no need to run collectstatic when
-# running locally. Also, the below named must exist as a folder on server
-# in the root of the project. The admin static files go here after collectstatic
+# running locally. Also, the below named variable must ALSO exist as a folder on server
+# in the root of the project. The static files are copied to this folder after 
+# the server has run collectstatic. If you choose to run colllectstatic locally
+# then git will want to save the repository (170+ files) many of which you will never change.
 STATIC_ROOT = "static_output"
+
+# If you want to have extra static files and a directory on your GitHub repo,
+# uncomment the following line. Add the other file location(s) after the last comma
+# STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
