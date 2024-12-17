@@ -1,6 +1,8 @@
 {% extends "polls/base.html" %}
 <title>{% block title %}Questions{% endblock %}</title>
 {% block content %}
+<h1>Welcome to the Polls app</h1>
+<h2>Please select one of these questions</h2>
 {% if latest_question_list %}
     <ul>
         {% for question in latest_question_list %}

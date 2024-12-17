@@ -1,7 +1,8 @@
 {% extends "polls/base.html" %}
 <title>{% block title %}Voting Results{% endblock %}</title>
 {% block content %}
-<h1>{{ question.question_text }}</h1>
+<h2>This is how people have voted on this question</h2>
+<h3>{{ question.question_text }}</h3>
 
 <ul>
 {% for choice in question.choice_set.all %}
