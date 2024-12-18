@@ -26,14 +26,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.getenv("DEBUG", "False") == "True"
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv("DEBUG", "False") == "True"
+# DEBUG = os.getenv("DEBUG")
 #raise Exception("DEBUG = " + str(DEBUG))
 # Determines if local sqlite3 db is used or production db
 DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
 #raise Exception("DEV_MODE = " + str(DEVELOPMENT_MODE))
 if DEVELOPMENT_MODE:
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ["localhost"]
 else:
     ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
